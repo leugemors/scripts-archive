@@ -1,0 +1,128 @@
+#!/bin/bash
+#############################################################################
+##
+##  install all packages needed to compile suite6 on a rhel8
+##  (or centos8) machine, and set some environment stuff
+##
+#############################################################################
+##
+##  manual tasks to perform
+##
+##  * make sure to disable selinux !!! (/etc/selinux/config)
+##  * create user pbuser:pbuser
+##  * install db2 client as root       (db2_install)
+##  * create db2 instance for pbuser   (db2icrt pbuser)
+##  * copy libs and config for oracle in
+##    /home/huminf/v/portable-build/oracle_instantclient
+##  * first checkout of trunk and/or branch
+##
+##  remarks
+##
+##  * the standard java from the repositories will give you some error
+##    messages, use adopt java and copy it into /opt/java/
+##  * same goes for maven. rhel comes with an older version, download
+##    and install in /opt/maven/
+##
+#############################################################################
+
+
+### check if we are root
+
+if [ $UID != 0 ]; then
+  printf "\nERROR : you need to be root to run this script!\n\n"
+  exit 1
+fi
+
+
+### initializations
+
+# in redhat 8 yum has been replaced with dnf
+
+#INSTAlL="yum -y install"
+INSTALL="dnf -y install"
+
+
+### install all available updates
+
+$INSTALL update
+
+
+### install network utilities
+
+$INSTALL bind-utils
+$INSTALL net-tools
+$INSTALL nfs-utils
+$INSTALL yp-tools
+
+
+### install chrony (replaces ntp)
+
+$INSTALL chrony           # replaces ntp
+
+systemctl start chronyd
+systemctl enable chronyd
+
+
+### install building utilities
+
+$INSTALL automake
+$INSTALL bison # also contains m4
+$INSTALL byacc
+$INSTALL bzip2
+$INSTALL flex
+$INSTALL gcc
+$INSTALL gcc-c++
+$INSTALL libaio
+$INSTALL make
+$INSTALL subversion
+$INSTALL unzip
+$INSTALL zip
+
+
+### install miscelaneous packages
+
+$INSTALL mc
+$INSTALL mlocate
+$INSTALL vim-enhanced
+$INSTALL wget
+
+
+# install and configure the epel repo
+
+dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+
+
+### install monitoring tools (part of epel)
+
+$INSTALL nrpe
+$INSTALL nagios-plugins-nrpe
+$INSTALL htop
+$INSTALL open-vm-tools
+
+
+### create directories for mounting netapp shares
+
+mkdir /contport
+mkdir /home2
+mkdir -p /home/huminf/v
+mkdir /home/oplever
+
+
+### create some softlinks
+
+ln -sf /usr/bin/bash /usr/local/bin/bash
+ln -sf /usr/bin/make /usr/local/bin/gmake
+
+
+### disable the firewall, otherwise some tests will fail
+
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -F
+
+systemctl stop firewalld
+systemctl disable firewalld
+
+
+### EOF #####################################################################

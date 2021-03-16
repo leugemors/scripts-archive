@@ -1,0 +1,11 @@
+#!/bin/bash
+#############################################################################
+##
+##  simple bash script to show the remaining battery power
+##
+#############################################################################
+
+upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep percentage
+upower -i /org/freedesktop/UPower/devices/battery_BAT1 | grep percentage
+
+### EOF #####################################################################

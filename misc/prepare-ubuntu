@@ -1,0 +1,42 @@
+#!/bin/bash
+#############################################################################
+##
+##  additions to a standard server installation
+##
+#############################################################################
+
+### Initializations
+
+APTGET=`which apt-get`
+INSTALL="$APTGET -y install"
+
+### basic packages
+
+$INSTALL binutils
+$INSTALL figlet
+$INSTALL hardinfo
+$INSTALL hexedit
+$INSTALL htop
+$INSTALL iftop
+$INSTALL iotop
+$INSTALL mc
+$INSTALL tasksel
+$INSTALL vim
+$INSTALL unzip
+$INSTALL zip
+
+### packages for networking
+
+$INSTALL lynx
+$INSTALL nfs-common
+$INSTALL openssh-server
+$INSTALL traceroute
+$INSTALL whois
+
+### packages for security
+
+$INSTALL chkrootkit
+$INSTALL nmap
+$INSTALL unhide
+
+### EOF #####################################################################
