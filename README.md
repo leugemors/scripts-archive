@@ -9,3 +9,5 @@ Scripts to maintain my local DNS server.
 
 **ZIMBRA**  
 Scripts for my old Zimbra mail server.
+
+NOTE: Just updating this README.md file to avoid them trowing away my old repo's.
